@@ -606,6 +606,10 @@ class NoUTurnMCMC(pints.SingleChainMCMC):
         """ See :meth:`Loggable._log_init()`. """
         logger.add_float('Accept.')
         logger.add_counter('Steps.')
+        logger.add_counter('RHS')
+
+    def set_ode(self, ode):
+        self.ode = ode
 
     def _log_write(self, logger):
         """ See :meth:`Loggable._log_write()`. """
@@ -613,9 +617,12 @@ class NoUTurnMCMC(pints.SingleChainMCMC):
         if self._last_log_write == self._mcmc_iteration:
             logger.log(None)
             logger.log(None)
+            logger.log(None)
         else:
             logger.log(self._mcmc_acceptance)
             logger.log(self._n_leapfrog)
+            logger.log(self.ode.rhs_calls)
+
         self._mcmc_acceptance = 0
         self._n_leapfrog = 0
         self._last_log_write = self._mcmc_iteration
