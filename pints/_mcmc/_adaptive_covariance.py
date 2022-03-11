@@ -151,10 +151,15 @@ class AdaptiveCovarianceMC(pints.SingleChainMCMC):
     def _log_init(self, logger):
         """ See :meth:`Loggable._log_init()`. """
         logger.add_float('Accept.')
+        logger.add_counter('RHS')
+
+    def set_ode(self, ode):
+        self.ode = ode
 
     def _log_write(self, logger):
         """ See :meth:`Loggable._log_write()`. """
         logger.log(self._acceptance_rate)
+        logger.log(self.ode.rhs_calls)
 
     def n_hyper_parameters(self):
         """ See :meth:`TunableMethod.n_hyper_parameters()`. """
@@ -301,4 +306,3 @@ class AdaptiveCovarianceMC(pints.SingleChainMCMC):
 
         # Return current sample
         return self._current, self._current_log_pdf, accepted
-
