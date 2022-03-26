@@ -413,6 +413,18 @@ multiprocessing.html#all-platforms>`_ for details).
         return errors
 
 
+class MultiSequentialEvaluator(Evaluator):
+    def __init__(self, functions, args=None):
+        super(MultiSequentialEvaluator, self).__init__(functions[0], args)
+        self._functions = functions
+
+    def _evaluate(self, positions):
+        scores = [0] * len(positions)
+        for k, x in enumerate(positions):
+            scores[k] = self._functions[k](x, *self._args)
+        return scores
+
+
 class SequentialEvaluator(Evaluator):
     """
     Evaluates a function (or callable object) for a list of input values, and
@@ -522,4 +534,3 @@ class _Worker(multiprocessing.Process):
         except (Exception, KeyboardInterrupt, SystemExit):
             self._errors.put((self.pid, traceback.format_exc()))
             self._error.set()
-
