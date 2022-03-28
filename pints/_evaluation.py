@@ -414,6 +414,10 @@ multiprocessing.html#all-platforms>`_ for details).
 
 
 class MultiSequentialEvaluator(Evaluator):
+    """Evluates a sequence of callables, each for a a corresponding item in
+    a list of input values, and returns a list containing the calculated
+    function evaluations.
+    """
     def __init__(self, functions, args=None):
         super(MultiSequentialEvaluator, self).__init__(functions[0], args)
         self._functions = functions

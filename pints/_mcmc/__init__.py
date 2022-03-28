@@ -5,6 +5,7 @@
 # released under the BSD 3-clause license. See accompanying LICENSE.md for
 # copyright notice and full license details.
 #
+import copy
 import os
 import pints
 import numpy as np
@@ -295,13 +296,18 @@ class MCMCController(object):
     method : class
         The class of :class:`MCMCSampler` to use. If no method is specified,
         :class:`HaarioBardenetACMC` is used.
+    copy_log_pdf : bool
+        Whether or not to make copies of the logpdf for each chain. If true,
+        each chain will call its own deepcopy of the logpdf. If False, all
+        chains will call the same object of the logpdf.
     """
 
     def __init__(
             self, log_pdf, chains, x0, sigma0=None, transformation=None,
-            method=None):
+            method=None, copy_log_pdf=False):
 
-        if isinstance(log_pdf, list):
+        if copy_log_pdf:
+            log_pdf = [copy.deepcopy(log_pdf) for _ in range(chains)]
             # multiple logpdfs
             self.multi_logpdf = True
             for lpdf in log_pdf:
